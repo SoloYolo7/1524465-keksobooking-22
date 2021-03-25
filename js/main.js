@@ -20,36 +20,22 @@ const AD_QUANTITY = 10;
 
 // УТИЛИТАРНЫЕ ФУНКЦИИ
 
-// Возвращаем целое число
-// https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-const getRandomIntInclusive = (min, max) => {
-  if (min >= 0 && max >= 0 && min !== max) {
-    if (max < min) {
-      swapPlaces(min, max);
-    }
-
-    min = Math.ceil(min);
-    max = Math.floor(max);
-
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+// Фунция для поиска случайного числа в заданном интервале включительно. Источник: https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random#%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5_%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D0%BE%D0%B3%D0%BE_%D1%87%D0%B8%D1%81%D0%BB%D0%B0_%D0%B2_%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%BD%D0%BE%D0%BC_%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D0%B2%D0%B0%D0%BB%D0%B5
+const getRandomNumber = (min, max) => {
+  if (min > max) {
+    return 0;
   }
+  let result = Math.random() * (max - min + 1) + min;
+  return result > max ? max : result;
+}
 
-  return null;
-};
-
-// Возвращаем число с плавающей точкой
-const getRandomInclusive = (min, max, numberDigit) => {
-
-  if (min >= 0 && max >= 0 && min !== max) {
-    if (max < min) {
-      swapPlaces(min, max);
-    }
-
-    return parseFloat((Math.random() * (max - min) + min).toFixed(numberDigit));
+// Функция, возвращающая случайное число с плавающей точкой из переданного диапазона включительно. Источник: https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed
+const getCoordinates = (min, max, digits) => {
+  if (min > max) {
+    return '0';
   }
-
-  return null;
-};
+  return getRandomNumber(min, max).toFixed(digits);
+}
 
 // СОЗДАЕМ МАССИВ ОБЪЯВЛЕНИЙ
 const getRandomArrayElement = (items) => {
