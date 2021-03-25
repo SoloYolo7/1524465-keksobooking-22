@@ -18,24 +18,28 @@ const [Y_MIN, Y_MAX] = [139.70000, 139.80000];
 const DIGIT_NUMBER = 5;
 const AD_QUANTITY = 10;
 
-// УТИЛИТАРНЫЕ ФУНКЦИИ
+/**
+ * Получение случайного числа из диапазона
+ * @param {number} min — минимальное значение
+ * @param {number} max — максимальное значение
+ * @param {number} digitsAfterDecpoint — количество знаков после запятой
+ * @return {number} — случайное число
+ */
 
-// Фунция для поиска случайного числа в заданном интервале включительно. Источник: https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random#%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5_%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D0%BE%D0%B3%D0%BE_%D1%87%D0%B8%D1%81%D0%BB%D0%B0_%D0%B2_%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%BD%D0%BE%D0%BC_%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D0%B2%D0%B0%D0%BB%D0%B5
-const getRandomNumber = (min, max) => {
-  if (min > max) {
-    return 0;
+const getRandomNumberInRange = (min, max, digitsAfterDecpoint = 0) => {
+  if (min < 0) {
+    min = 0;
   }
-  let result = Math.random() * (max - min + 1) + min;
-  return result > max ? max : result;
-}
 
-// Функция, возвращающая случайное число с плавающей точкой из переданного диапазона включительно. Источник: https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed
-const getCoordinates = (min, max, digits) => {
-  if (min > max) {
-    return '0';
+  if (max < 0) {
+    max = 0;
   }
-  return getRandomNumber(min, max).toFixed(digits);
-}
+
+  if (max < min) {
+    max = min;
+  }
+  return Number((min + Math.random() * (max - min)).toFixed(digitsAfterDecpoint));
+};
 
 // СОЗДАЕМ МАССИВ ОБЪЯВЛЕНИЙ
 const getRandomArrayElement = (items) => {
