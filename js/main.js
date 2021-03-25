@@ -19,36 +19,27 @@ const DIGIT_NUMBER = 5;
 
 const AD_QUANTITY = 10;
 
-// УТИЛИТАРНЫЕ ФУНКЦИИ
-// Возвращаем целое число
-// https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-const getRandomIntInclusive = (min, max) => {
-  if (min >= 0 && max >= 0 && min !== max) {
-    if (max < min) {
-      swapPlaces(min, max);
-    }
+/**
+ * Получение случайного числа из диапазона
+ * @param {number} min — минимальное значение
+ * @param {number} max — максимальное значение
+ * @param {number} digitsAfterDecpoint — количество знаков после запятой
+ * @return {number} — случайное число
+ */
 
-    min = Math.ceil(min);
-    max = Math.floor(max);
-
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+const getRandomNumberInRange = (min, max, digitsAfterDecpoint = 0) => {
+  if (min < 0) {
+    min = 0;
   }
 
-  return null;
-};
-
-// Возвращаем число с плавающей точкой
-const getRandomInclusive = (min, max, numberDigit) => {
-
-  if (min >= 0 && max >= 0 && min !== max) {
-    if (max < min) {
-      swapPlaces(min, max);
-    }
-
-    return parseFloat((Math.random() * (max - min) + min).toFixed(numberDigit));
+  if (max < 0) {
+    max = 0;
   }
 
-  return null;
+  if (max < min) {
+    max = min;
+  }
+  return Number((min + Math.random() * (max - min)).toFixed(digitsAfterDecpoint));
 };
 
 // СОЗДАЕМ МАССИВ ОБЪЯВЛЕНИЙ
