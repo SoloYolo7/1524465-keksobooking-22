@@ -16,43 +16,40 @@ const TOTAL_PHOTOS = [
 const [X_MIN, X_MAX] = [35.65000, 35.70000];
 const [Y_MIN, Y_MAX] = [139.70000, 139.80000];
 const DIGIT_NUMBER = 5;
+
 const AD_QUANTITY = 10;
 
-function getRandomIntegerNumber(min, max) {
-  if (min > max) {
-    throw new Error('Начальное значение диапазона больше конечного');
+// УТИЛИТАРНЫЕ ФУНКЦИИ
+// Возвращаем целое число
+// https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+const getRandomIntInclusive = (min, max) => {
+  if (min >= 0 && max >= 0 && min !== max) {
+    if (max < min) {
+      swapPlaces(min, max);
+    }
+
+    min = Math.ceil(min);
+    max = Math.floor(max);
+
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  if (max < 0) {
-    throw new Error('Конечное значение диапазона не может являться отрицательным числом');
+  return null;
+};
+
+// Возвращаем число с плавающей точкой
+const getRandomInclusive = (min, max, numberDigit) => {
+
+  if (min >= 0 && max >= 0 && min !== max) {
+    if (max < min) {
+      swapPlaces(min, max);
+    }
+
+    return parseFloat((Math.random() * (max - min) + min).toFixed(numberDigit));
   }
 
-  if (min < 0) {
-    throw new Error('Начальное значение диапазона не может являться отрицательным числом');
-  }
-
-  return Math.floor((Math.random() * (max - min + 1)) + min);
-}
-
-function getRandomFloatNumber(min, max, decimalPlaces) {
-  if (min > max) {
-    throw new Error('Начальное значение диапазона больше конечного');
-  }
-
-  if (max < 0) {
-    throw new Error('Конечное значение диапазона не может являться отрицательным числом');
-  }
-
-  if (min < 0) {
-    throw new Error('Начальное значение диапазона не может являться отрицательным числом');
-  }
-
-  if (decimalPlaces < 0 || decimalPlaces > 20) {
-    throw new Error('Неверно введено количество знаков после запятой');
-  }
-
-  return (Math.random() * (max - min) + min).toFixed(decimalPlaces);
-}
+  return null;
+};
 
 // СОЗДАЕМ МАССИВ ОБЪЯВЛЕНИЙ
 const getRandomArrayElement = (items) => {
