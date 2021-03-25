@@ -16,11 +16,9 @@ const TOTAL_PHOTOS = [
 const [X_MIN, X_MAX] = [35.65000, 35.70000];
 const [Y_MIN, Y_MAX] = [139.70000, 139.80000];
 const DIGIT_NUMBER = 5;
-
 const AD_QUANTITY = 10;
 
 // УТИЛИТАРНЫЕ ФУНКЦИИ
-const swapPlaces = (min, max) => [min, max] = [max, min];
 
 // Возвращаем целое число
 // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random
