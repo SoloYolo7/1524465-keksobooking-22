@@ -18,28 +18,41 @@ const [Y_MIN, Y_MAX] = [139.70000, 139.80000];
 const DIGIT_NUMBER = 5;
 const AD_QUANTITY = 10;
 
-/**
- * Получение случайного числа из диапазона
- * @param {number} min — минимальное значение
- * @param {number} max — максимальное значение
- * @param {number} digitsAfterDecpoint — количество знаков после запятой
- * @return {number} — случайное число
- */
-
-const getRandomNumberInRange = (min, max, digitsAfterDecpoint = 0) => {
-  if (min < 0) {
-    min = 0;
+function getRandomIntegerNumber(min, max) {
+  if (min > max) {
+    throw new Error('Начальное значение диапазона больше конечного');
   }
 
   if (max < 0) {
-    max = 0;
+    throw new Error('Конечное значение диапазона не может являться отрицательным числом');
   }
 
-  if (max < min) {
-    max = min;
+  if (min < 0) {
+    throw new Error('Начальное значение диапазона не может являться отрицательным числом');
   }
-  return Number((min + Math.random() * (max - min)).toFixed(digitsAfterDecpoint));
-};
+
+  return Math.floor((Math.random() * (max - min + 1)) + min);
+}
+
+function getRandomFloatNumber(min, max, decimalPlaces) {
+  if (min > max) {
+    throw new Error('Начальное значение диапазона больше конечного');
+  }
+
+  if (max < 0) {
+    throw new Error('Конечное значение диапазона не может являться отрицательным числом');
+  }
+
+  if (min < 0) {
+    throw new Error('Начальное значение диапазона не может являться отрицательным числом');
+  }
+
+  if (decimalPlaces < 0 || decimalPlaces > 20) {
+    throw new Error('Неверно введено количество знаков после запятой');
+  }
+
+  return (Math.random() * (max - min) + min).toFixed(decimalPlaces);
+}
 
 // СОЗДАЕМ МАССИВ ОБЪЯВЛЕНИЙ
 const getRandomArrayElement = (items) => {
