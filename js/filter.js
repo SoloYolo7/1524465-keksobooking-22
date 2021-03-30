@@ -1,15 +1,15 @@
-const mapFilters = document.querySelector('.map__filters');
+const Price = {
+  LOW: 10000,
+  HIGH: 50000,
+}
 
+const mapFilters = document.querySelector('.map__filters');
 const housingType = mapFilters.querySelector('#housing-type');
 const housingPrice = mapFilters.querySelector('#housing-price');
 const housingRooms = mapFilters.querySelector('#housing-rooms');
 const housingGuests = mapFilters.querySelector('#housing-guests');
 const housingFeatures = mapFilters.querySelector('#housing-features');
 
-const PRICES = {
-  'low': 10000,
-  'high': 50000,
-}
 
 const filterByType = (announcementsList) => {
   return (announcementsList.offer.type === housingType.value) || (housingType.value === 'any');
@@ -18,11 +18,11 @@ const filterByType = (announcementsList) => {
 const filterByPrice = (announcementsList) => {
   switch (housingPrice.value) {
     case 'low':
-      return announcementsList.offer.price < PRICES[housingPrice.value];
+      return announcementsList.offer.price < Price[housingPrice.value.toUpperCase()];
     case 'middle':
-      return (announcementsList.offer.price >= PRICES['low']) && (announcementsList.offer.price <= PRICES['high']);
+      return (announcementsList.offer.price >= Price['LOW']) && (announcementsList.offer.price <= Price['HIGH']);
     case 'high':
-      return announcementsList.offer.price > PRICES[housingPrice.value];
+      return announcementsList.offer.price > Price[housingPrice.value.toUpperCase()];
     case 'any':
       return announcementsList;
   }

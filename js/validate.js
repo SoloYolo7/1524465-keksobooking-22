@@ -9,29 +9,23 @@ import {
 
 const MAX_GENERAL_PRICE = 1000000;
 
-const RoomsCapacity = {
+const RoomCapacity = {
   1: ['1'],
   2: ['1', '2'],
   3: ['1', '2', '3'],
   100: ['0'],
 }
 
-const charCounter = document.querySelector('.char-counter');
-
-AccommodationElement.TITLE.addEventListener('input', (evt) => {
-  charCounter.textContent = `( ${evt.target.value.length} / 100 символов )`;
-});
-
 AccommodationElement.TITLE.addEventListener('change', (evt) => {
   let customValidity = '';
-  const titleValidityStates = {
+  const TitleValidityState = {
     tooShort: 'Слишком короткий заголовок. Длина должна быть минимум 30 символов',
     tooLong: 'Слишком длинный заголовок',
     valueMissing: 'Заголовок должен быть обязательно заполнен',
   };
-  for (let state in titleValidityStates) {
+  for (let state in TitleValidityState) {
     if (evt.target.validity[state]) {
-      customValidity = titleValidityStates[state];
+      customValidity = TitleValidityState[state];
     }
   }
   AccommodationElement.TITLE.setCustomValidity(customValidity);
@@ -48,14 +42,14 @@ AccommodationElement.TYPE.addEventListener('change', (evt) => {
 
 AccommodationElement.PRICE.addEventListener('change', (evt) => {
   let customValidity = '';
-  const priceValidityStates = {
+  const PriceValidityState = {
     valueMissing: 'Введите цену',
     rangeUnderflow: `Цена за ${accommodationTypes[AccommodationElement.TYPE.value].declension} должна быть больше ${evt.target.min} рублей`,
     rangeOverflow: `Цена за жилье должна быть меньше ${MAX_GENERAL_PRICE} рублей`,
   };
-  for (let state in priceValidityStates) {
+  for (let state in PriceValidityState) {
     if (evt.target.validity[state]) {
-      customValidity = priceValidityStates[state];
+      customValidity = PriceValidityState[state];
     }
   }
   AccommodationElement.PRICE.setCustomValidity(customValidity);
@@ -71,10 +65,9 @@ AccommodationElement.CHECKOUT.addEventListener('change', (evt) => {
   AccommodationElement.CHECKIN.value = evt.target.value;
 });
 
-
 const setRoomsCapacity = (rooms, guests) => {
   for (let guest of guests.children) {
-    if (RoomsCapacity[rooms.value].includes(guest.value)) {
+    if (RoomCapacity[rooms.value].includes(guest.value)) {
       guest.disabled = false;
       guest.selected = true;
     } else {
@@ -86,8 +79,3 @@ const setRoomsCapacity = (rooms, guests) => {
 AccommodationElement.ROOM_NUMBER.addEventListener('change', () => {
   setRoomsCapacity(AccommodationElement.ROOM_NUMBER, AccommodationElement.CAPACITY);
 });
-
-
-export {
-  AccommodationElement
-}

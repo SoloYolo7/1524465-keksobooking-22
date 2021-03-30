@@ -1,7 +1,7 @@
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const AVATAR_DEFAULT_URL = ['img/muffin-grey.svg'];
 
-const image = {
+const Image = {
   WIDTH: '70',
   HEIGHT: '70',
 }
@@ -14,8 +14,8 @@ const photoPreview = document.querySelector('.ad-form__photo');
 
 const createImage = () => {
   const imageElement = document.createElement('IMG');
-  imageElement.width = image.WIDTH;
-  imageElement.height = image.HEIGHT;
+  imageElement.width = Image.WIDTH;
+  imageElement.height = Image.HEIGHT;
   return imageElement;
 }
 
@@ -46,12 +46,12 @@ photoChooser.addEventListener('change', () => {
   photoPreview.append(image);
 });
 
-const clearAvatar = () => {
+const clearAvatars = () => {
   avatarPreview.src = AVATAR_DEFAULT_URL;
   photoPreview.textContent = '';
 };
 
 
 export {
-  clearAvatar
+  clearAvatars
 };
