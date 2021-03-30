@@ -6,41 +6,34 @@ import {
 } from './form.js';
 
 import {
+  AccommodationElement
+} from './validate.js';
+
+import {
   renderAnnouncement
 } from './render-announcement.js';
 
-import {
-  mapFilters,
+/* import {
   filterAnnouncements
-} from './filter.js';
+} from './filter.js'; */
 
-import {
-  debounce
-} from './util.js';
 
 const DIGITS = 5;
 const ZOOM = 10;
-const ANNOUNCEMENT_LIMIT = 10;
-const RERENDER_DELAY = 500;
 
-const TokyoCenter = {
+const tokyoCenter = {
   lat: 35.66566,
   lng: 139.76103,
 };
 
-const addressField = document.querySelector('.ad-form').querySelector('#address');
-
 const tokyoMap = L.map('map-canvas');
 
-const showDefaultMainPinAddress = () => {
-  addressField.value = `${TokyoCenter.lat}, ${TokyoCenter.lng}`
-}
+const mainPinAddress = `${tokyoCenter.lat}, ${tokyoCenter.lng}`;
 
 tokyoMap.on('load', () => {
   setFilterActive();
   setFormActive();
-  showDefaultMainPinAddress();
-}).setView(TokyoCenter, ZOOM);
+}).setView(tokyoCenter, ZOOM);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -49,6 +42,7 @@ L.tileLayer(
   },
 ).addTo(tokyoMap);
 
+
 const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
   iconSize: [52, 52],
@@ -56,7 +50,7 @@ const mainPinIcon = L.icon({
 });
 
 const mainPinMarker = L.marker(
-  TokyoCenter,
+  tokyoCenter,
   {
     draggable: true,
     icon: mainPinIcon,
@@ -64,11 +58,14 @@ const mainPinMarker = L.marker(
 )
   .addTo(tokyoMap);
 
+AccommodationElement.ADDRESS.value = mainPinAddress;
+
 mainPinMarker.on('move', (evt) => {
-  addressField.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
+  AccommodationElement.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
 });
 
-const tokyoPinsLayer = L.layerGroup().addTo(tokyoMap);
+const tokyoPinsLayer = L.layerGroup()
+  .addTo(tokyoMap);
 
 const pinIcon = L.icon({
   iconUrl: './img/pin.svg',
@@ -99,24 +96,8 @@ const removePins = () => {
   tokyoPinsLayer.clearLayers();
 };
 
-const resetMap = () => {
-  tokyoMap.setView(TokyoCenter, ZOOM);
-  mainPinMarker.setLatLng(TokyoCenter);
-  showDefaultMainPinAddress();
-};
-
-const setMapFiltersChangeHandler = (announcements) => {
-  mapFilters.addEventListener('change', debounce(() => {
-    removePins();
-    renderPins(filterAnnouncements(announcements).slice(0, ANNOUNCEMENT_LIMIT));
-  }, RERENDER_DELAY));
-};
-
-
 export {
-  setMapFiltersChangeHandler,
+  mainPinAddress,
   renderPins,
-  removePins,
-  resetMap,
-  ANNOUNCEMENT_LIMIT
+  removePins
 }

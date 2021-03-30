@@ -1,29 +1,22 @@
 import {
-  accommodationTypes
-} from './render-announcement.js';
-
-import {
   sendData
 } from './create-fetch.js';
 
 import {
-  showSuccessModal,
-  showErrorModal
+  showModal,
+  successModal,
+  errorModal
 } from './modal.js';
 
 import {
-  renderPins,
-  ANNOUNCEMENT_LIMIT,
-  removePins,
-  resetMap
+  mainPinAddress
 } from './map.js';
 
-import {
-  clearAvatars
-} from './avatar.js';
-
-
 const adForm = document.querySelector('.ad-form');
+const mapFilterElements = document.querySelectorAll('.map__filter');
+const features = document.querySelector('.map__features');
+const adFormElement = adForm.querySelectorAll('.ad-form__element');
+
 const AccommodationElement = {
   TITLE: adForm.querySelector('#title'),              // Заголовок объявления
   ADDRESS: adForm.querySelector('#address'),          // Адрес (координаты)
@@ -34,12 +27,6 @@ const AccommodationElement = {
   ROOM_NUMBER: adForm.querySelector('#room_number'),  // Количество комнат
   CAPACITY: adForm.querySelector('#capacity'),        // Количество мест
 };
-
-const mapFilterElements = document.querySelectorAll('.map__filter');
-const features = document.querySelector('.map__features');
-const adFormElement = adForm.querySelectorAll('.ad-form__element');
-const formReset = adForm.querySelector('.ad-form__reset');
-const mapFiltersForm = document.querySelector('.map__filters');
 
 const setFilterInactive = () => {
   mapFilterElements.forEach((filterElement) => {
@@ -71,60 +58,39 @@ const setFormActive = () => {
   adForm.classList.remove('ad-form--disabled');
 };
 
-const setPriceDefaultPlaceholder = () => {
-  AccommodationElement.PRICE.placeholder = accommodationTypes[AccommodationElement.TYPE.options[AccommodationElement.TYPE.selectedIndex].value].minPrice
-}
-
-const resetFilters = () => {
-  mapFiltersForm.reset();
-};
-
-const resetForm = () => {
-  adForm.reset();
-};
-
 const setFormDefault = () => {
-  resetForm();
-  setPriceDefaultPlaceholder();
-  clearAvatars();
-  resetFilters();
-  resetMap();
+  adForm.reset();
+  AccommodationElement.ADDRESS.value = mainPinAddress;
 };
 
-const setFormSubmitHandler = (announcements) => {
-  adForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    sendData(
-      () => {
-        showSuccessModal();
-        setFormDefault();
-        removePins();
-        renderPins(announcements.slice(0, ANNOUNCEMENT_LIMIT));
-      },
-      () => showErrorModal(),
-      new FormData(evt.target),
-    );
-  });
-};
-
-const setFormResetHandler = (announcements) => {
-  formReset.addEventListener('click', (evt) => {
-    evt.preventDefault();
-    setFormDefault();
-    removePins();
-    renderPins(announcements.slice(0, ANNOUNCEMENT_LIMIT));
-  });
-};
 
 setFilterInactive();
 setFormInactive();
+
+/* ------ */
+
+
+/*  Обработка событий при отправке формы создания пользовательского объявления  */
+
+adForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  sendData(
+    () => {
+      showModal(successModal);
+      setFormDefault();
+    },
+    () => showModal(errorModal),
+    new FormData(evt.target),
+  );
+});
+
+/* ------ */
 
 
 export {
   adForm,
   AccommodationElement,
   setFilterActive,
-  setFormActive,
-  setFormSubmitHandler,
-  setFormResetHandler
+  setFormActive
 }
