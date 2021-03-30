@@ -5,21 +5,24 @@
   "description": "Личный проект «Кексобукинг» от HTML Academy",
   "repository": {
     "type": "git",
-    "url": "git@github.com:htmlacademy-javascript/1524465-keksobooking-22.git"
+    "url": "git@github.com:htmlacademy-javascript/1416651-keksobooking-22.git"
   },
   "bugs": {
-    "url": "https://github.com/htmlacademy-javascript/1524465-keksobooking-22/issues"
+    "url": "https://github.com/htmlacademy-javascript/1416651-keksobooking-22/issues"
   },
   "devDependencies": {
     "browser-sync": "2.26.14",
     "eslint": "7.18.0",
-    "eslint-config-htmlacademy": "2.0.0"
+    "eslint-config-htmlacademy": "2.0.0",
+    "webpack": "5.28.0",
+    "webpack-cli": "4.6.0"
   },
   "license": "MIT",
   "dependencies": {},
   "scripts": {
-    "start": "browser-sync start --server --no-ui --files \"js/**/*.js\"",
-    "test": "eslint js/"
+    "build": "webpack --mode production",
+    "start": "browser-sync start --server \"build/\" --no-ui --files \"source/**/*.js\"",
+    "test": "eslint source/js/"
   },
   "engines": {
     "node": ">=12.0.0"
