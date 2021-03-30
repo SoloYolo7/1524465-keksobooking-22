@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="leaflet/leaflet.css">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <title>Кексобукинг</title>
-  <base href="https://soloyolo7.github.io/1524465-keksobooking-22/">
+  <base href="https://htmlacademy-javascript.github.io/10069-keksobooking-22/16/">
 </head>
 <body>
 
@@ -47,8 +47,8 @@
           </select>
           <select name="housing-guests" id="housing-guests" class="map__filter">
             <option value="any" selected>Любое число гостей</option>
-            <option value="2">Два гостя</option>
             <option value="1">Один гость</option>
+            <option value="2">Два гостя</option>
             <option value="0">Не для гостей</option>
           </select>
           <fieldset name="housing-features" id="housing-features" class="map__features">
@@ -133,9 +133,9 @@
           <label class="ad-form__label" for="capacity">Количество мест</label>
           <select id="capacity" name="capacity">
             <option value="1" selected>для 1 гостя</option>
-            <option value="2">для 2 гостей</option>
-            <option value="3">для 3 гостей</option>
-            <option value="0">не для гостей</option>
+            <option value="2" disabled>для 2 гостей</option>
+            <option value="3" disabled>для 3 гостей</option>
+            <option value="0" disabled>не для гостей</option>
           </select>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide features">
@@ -238,11 +238,11 @@
     </div>
   </template>
 
-  <script src="./js/main.js" type="module"></script>
-
-  <script src="./leaflet/leaflet.js"
+  <script src="leaflet/leaflet.js"
   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
   crossorigin=""></script>
+
+  <script src="js/main.bundle.js"></script>
 
 </body>
 </html>
