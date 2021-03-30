@@ -14,6 +14,7 @@ import './map.js';
 import './form.js';
 import './validate.js';
 import './filter.js';
+import './avatar.js';
 
 import {
   showModal
