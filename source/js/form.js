@@ -1,180 +1,130 @@
-import {sendData} from './api.js'
-import {openMessageSuccess, openMessageError} from './util.js'
-import {mainMarker, VALUELAT, VALUELNG, ZOOMMAP, map} from './map.js'
+import {
+  accommodationTypes
+} from './render-announcement.js';
 
-const form = document.querySelector('.ad-form');
-const typeLodging = form.querySelector('#type');
-const price = form.querySelector('#price');
-const timein = form.querySelector('#timein');
-const timeout = form.querySelector('#timeout');
-const title = form.querySelector('#title');
-const rooms = form.querySelector('#room_number');
-const capacity = form.querySelector('#capacity');
-const formButtonReset = form.querySelector('.ad-form__reset');
-const capacityValueOne = capacity.querySelector('#capacity option[value="1"]');
-const capacityValueTwo = capacity.querySelector('#capacity option[value="2"]');
-const capacityValueThree = capacity.querySelector('#capacity option[value="3"]');
-const capacityValueZero = capacity.querySelector('#capacity option[value="0"]');
-const roomValueOne = rooms.querySelector('#room_number option[value="1"]');
-const roomValueTwo = rooms.querySelector('#room_number option[value="2"]');
-const roomValueThree = rooms.querySelector('#room_number option[value="3"]');
-const roomValueHundred = rooms.querySelector('#room_number option[value="100"]');
+import {
+  sendData
+} from './create-fetch.js';
 
-//Изменяем минимальное значение в price в зависимости выбора typeLodging
-typeLodging.addEventListener('change', () => {
-  price.value = '';
-  switch (typeLodging.value) {
-    case 'bungalow' :
-      price.placeholder = 0;
-      price.min = 0; break
-    case 'flat' :
-      price.placeholder = 1000;
-      price.min = 1000; break
-    case 'house' :
-      price.placeholder = 5000;
-      price.min = 5000; break
-    case 'palace' :
-      price.placeholder = 10000;
-      price.min = 10000; break
-  }
-});
+import {
+  showSuccessModal,
+  showErrorModal
+} from './modal.js';
 
-//Правила валидации для price
-price.addEventListener('input', () => {
-  if (price.value < price.min) {
-    price.setCustomValidity(`Минимальная цена не может быть ниже ${price.min}!`);
-  } else if (price.value >= price.min) {
-    price.setCustomValidity('');
-  }
+import {
+  renderPins,
+  ANNOUNCEMENT_LIMIT,
+  removePins,
+  resetMap
+} from './map.js';
 
-  price.reportValidity();
-})
+import {
+  clearAvatars
+} from './avatar.js';
 
-//Изменяем значение в timeout в зависимости выбора timein и наоборот
-timein.addEventListener('change', () => {
-  switch (timein.value) {
-    case '12:00' :
-      timeout.value = timein.value; break
-    case '13:00' :
-      timeout.value = timein.value; break
-    case '14:00' :
-      timeout.value = timein.value; break
-  }
-});
 
-timeout.addEventListener('change', () => {
-  switch (timeout.value) {
-    case '12:00' :
-      timein.value = timeout.value; break
-    case '13:00' :
-      timein.value = timeout.value; break
-    case '14:00' :
-      timein.value = timeout.value; break
-  }
-});
+const adForm = document.querySelector('.ad-form');
+const AccommodationElement = {
+  TITLE: adForm.querySelector('#title'),              // Заголовок объявления
+  ADDRESS: adForm.querySelector('#address'),          // Адрес (координаты)
+  TYPE: adForm.querySelector('#type'),                // Тип жилья
+  PRICE: adForm.querySelector('#price'),              // Цена за ночь, руб.
+  CHECKIN: adForm.querySelector('#timein'),           // Время заезда
+  CHECKOUT: adForm.querySelector('#timeout'),         // Время выезда
+  ROOM_NUMBER: adForm.querySelector('#room_number'),  // Количество комнат
+  CAPACITY: adForm.querySelector('#capacity'),        // Количество мест
+};
 
-//Правила для title
-title.addEventListener('input', () => {
-  const valueLength = title.value.length;
-  const minValue = title.minLength;
-  const maxValue = title.maxLength;
+const mapFilterElements = document.querySelectorAll('.map__filter');
+const features = document.querySelector('.map__features');
+const adFormElement = adForm.querySelectorAll('.ad-form__element');
+const formReset = adForm.querySelector('.ad-form__reset');
+const mapFiltersForm = document.querySelector('.map__filters');
 
-  if (valueLength < minValue) {
-    title.setCustomValidity('еще ' + (minValue - valueLength) + ' символов');
-  } else if (valueLength > maxValue) {
-    title.setCustomValidity('Удалите лишние ' + (valueLength - maxValue) + 'символы');
-  } else {
-    title.setCustomValidity('');
-  }
+const setFilterInactive = () => {
+  mapFilterElements.forEach((filterElement) => {
+    filterElement.disabled = true;
+  });
+  features.disabled = true;
+};
 
-  title.reportValidity();
-});
+const setFormInactive = () => {
+  adFormElement.forEach((formElement) => {
+    formElement.disabled = true;
+  });
+  adForm.querySelector('.ad-form-header').disabled = true;
+  adForm.classList.add('ad-form--disabled');
+};
 
-//Поле rooms синхронизировано с полем capacity
-rooms.addEventListener('change', () => {
-  switch (rooms.value) {
-    case '1' :
-      capacity.value = '1';
-      capacityValueOne.removeAttribute('disabled');
-      capacityValueTwo.setAttribute('disabled','disabled');
-      capacityValueThree.setAttribute('disabled','disabled');
-      capacityValueZero.setAttribute('disabled','disabled'); break
-    case '2' :
-      capacityValueOne.removeAttribute('disabled');
-      capacityValueTwo.removeAttribute('disabled');
-      capacityValueThree.setAttribute('disabled','disabled');
-      capacityValueZero.setAttribute('disabled','disabled'); break
-    case '3' :
-      capacityValueOne.removeAttribute('disabled');
-      capacityValueTwo.removeAttribute('disabled');
-      capacityValueThree.removeAttribute('disabled');
-      capacityValueZero.setAttribute('disabled','disabled'); break
-    case '100' :
-      capacity.value = '0';
-      capacityValueZero.removeAttribute('disabled');
-      capacityValueThree.setAttribute('disabled','disabled');
-      capacityValueTwo.setAttribute('disabled','disabled');
-      capacityValueOne.setAttribute('disabled','disabled'); break
-  }
-});
+const setFilterActive = () => {
+  mapFilterElements.forEach((filterElement) => {
+    filterElement.disabled = false;
+  });
+  features.disabled = false;
+};
 
-capacity.addEventListener('change', () => {
-  switch (capacity.value) {
-    case '1' :
-      roomValueOne.removeAttribute('disabled');
-      roomValueTwo.removeAttribute('disabled');
-      roomValueThree.removeAttribute('disabled');
-      roomValueHundred.setAttribute('disabled','disabled'); break
-    case '2' :
-      roomValueTwo.removeAttribute('disabled');
-      roomValueThree.removeAttribute('disabled');
-      roomValueOne.setAttribute('disabled','disabled');
-      roomValueHundred.setAttribute('disabled','disabled'); break
-    case '3' :
-      roomValueThree.removeAttribute('disabled');
-      roomValueOne.setAttribute('disabled','disabled');
-      roomValueTwo.setAttribute('disabled','disabled');
-      roomValueHundred.setAttribute('disabled','disabled'); break
-    case '0' :
-      rooms.value = '100';
-      roomValueHundred.removeAttribute('disabled');
-      roomValueThree.setAttribute('disabled','disabled');
-      roomValueTwo.setAttribute('disabled','disabled');
-      roomValueOne.setAttribute('disabled','disabled'); break
-  }
-});
+const setFormActive = () => {
+  adFormElement.forEach((formElement) => {
+    formElement.disabled = false;
+  });
+  adForm.querySelector('.ad-form-header').disabled = false;
+  adForm.classList.remove('ad-form--disabled');
+};
 
-//Сброс карты и метки
-const mapReset = () => {
-  mainMarker.setLatLng([VALUELAT, VALUELNG]);
-  map.setView({
-    lat: VALUELAT,
-    lng: VALUELNG,
-  }, ZOOMMAP)
+const setPriceDefaultPlaceholder = () => {
+  AccommodationElement.PRICE.placeholder = accommodationTypes[AccommodationElement.TYPE.options[AccommodationElement.TYPE.selectedIndex].value].minPrice
 }
 
-//Сброс формы
-const formReset = () => {
-  form.reset();
-  mainMarker.setLatLng([VALUELAT, VALUELNG]);
-  mapReset();
-}
+const resetFilters = () => {
+  mapFiltersForm.reset();
+};
 
-//Сброс данных по кнопке 'очистить'
-formButtonReset.addEventListener('click', (evt) => {
-  evt.preventDefault();
-  formReset();
-  mapReset();
-})
+const resetForm = () => {
+  adForm.reset();
+};
 
-//Отправка данных
-form.onsubmit = (evt) => {
-  evt.preventDefault();
-  sendData(
-    () => {
-      openMessageSuccess();
-      formReset()
-    }, () => {
-      openMessageError();
-    }, new FormData(evt.target));
+const setFormDefault = () => {
+  resetForm();
+  setPriceDefaultPlaceholder();
+  clearAvatars();
+  resetFilters();
+  resetMap();
+};
+
+const setFormSubmitHandler = (announcements) => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    sendData(
+      () => {
+        showSuccessModal();
+        setFormDefault();
+        removePins();
+        renderPins(announcements.slice(0, ANNOUNCEMENT_LIMIT));
+      },
+      () => showErrorModal(),
+      new FormData(evt.target),
+    );
+  });
+};
+
+const setFormResetHandler = (announcements) => {
+  formReset.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    setFormDefault();
+    removePins();
+    renderPins(announcements.slice(0, ANNOUNCEMENT_LIMIT));
+  });
+};
+
+setFilterInactive();
+setFormInactive();
+
+
+export {
+  adForm,
+  AccommodationElement,
+  setFilterActive,
+  setFormActive,
+  setFormSubmitHandler,
+  setFormResetHandler
 }
