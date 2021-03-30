@@ -12,16 +12,10 @@ import {
   mainPinAddress
 } from './map.js';
 
-import {
-  clearAvatar
-} from './avatar.js';
-
-
 const adForm = document.querySelector('.ad-form');
 const mapFilterElements = document.querySelectorAll('.map__filter');
 const features = document.querySelector('.map__features');
 const adFormElement = adForm.querySelectorAll('.ad-form__element');
-const formReset = document.querySelector('.ad-form__reset');
 
 const AccommodationElement = {
   TITLE: adForm.querySelector('#title'),              // Заголовок объявления
@@ -67,13 +61,16 @@ const setFormActive = () => {
 const setFormDefault = () => {
   adForm.reset();
   AccommodationElement.ADDRESS.value = mainPinAddress;
-  clearAvatar();
 };
 
 
 setFilterInactive();
 setFormInactive();
 
+/* ------ */
+
+
+/*  Обработка событий при отправке формы создания пользовательского объявления  */
 
 adForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
@@ -88,10 +85,7 @@ adForm.addEventListener('submit', (evt) => {
   );
 });
 
-formReset.addEventListener('click', (evt) => {
-  evt.preventDefault();
-  setFormDefault();
-});
+/* ------ */
 
 
 export {
