@@ -1034,11 +1034,3 @@ fieldset {
 .hidden {
   display: none;
 }
-
-.char-counter {
-  float: right;
-  padding: 0 20px;
-  font-size: 12px;
-  color: #999999;
-}
-
